@@ -1,10 +1,10 @@
 const inquirer = require('inquirer');
 
-const department = require('./');
-const employee = require('./');
-const role = require('./');
+// const department = require('./');
+// const employee = require('./');
+// const role = require('./');
 
-beginQuestions();
+
 
 const beginQuestions = () => {
     inquirer.prompt([
@@ -62,3 +62,5 @@ const beginQuestions = () => {
 
 })
 }
+
+beginQuestions();
