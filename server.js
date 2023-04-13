@@ -63,4 +63,41 @@ const beginQuestions = () => {
 })
 }
 
+const addDepartment = () => {
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'addDepartment',
+            message: 'Choose one of the options below:',
+            choices: [
+                'Add department',
+                'Edit departments',
+                'Delete department',
+                'Go back' ]
+        }
+    ])
+  .then((answer) => {
+    switch (answer.addDepartment) {
+        case 'Add department':
+            console.log('\n');
+            addDepartment();
+            break;
+
+            case 'Edit departments':
+                console.log('\n');
+                editDepartment();
+                break;
+
+            case 'Delete department':
+                console.log('\n');
+                deleteDepartment();
+                break;
+
+            default:
+                console.log('\n')
+                menu();
+        }
+    })
+}
+
 beginQuestions();
