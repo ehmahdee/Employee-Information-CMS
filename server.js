@@ -138,4 +138,43 @@ const addRole = () => {
     ])
 }
 
+
+const addEmployee = () => {
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'addEmployee',
+            message: 'Choose one of the options below:',
+            choices: [
+                'Add employee',
+                'Edit employees',
+                'Delete employee',
+                'Go back'
+            ]    
+        }
+       .then((answer) => {
+            switch (answer.addEmployee) {
+                case 'Add employee':
+                    console.log('\n');
+                    addEmployee();
+                    break;
+
+                case 'Edit employees':
+                    console.log('\n');
+                    editEmployee();
+                    break;
+                
+                case 'Delete employee':
+                    console.log('\n');
+                    deleteEmployee();
+                    break;
+
+                default:
+                    console.log('\n')
+                    menu();
+            }
+        })
+    ])
+}
+
 beginQuestions();
