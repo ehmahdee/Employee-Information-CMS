@@ -1,4 +1,7 @@
+const express = require("express");
 const inquirer = require("inquirer");
+const mysql = require("mysql");
+const cTable = require("console.table");
 
 // const department = require('./');
 // const employee = require('./');
@@ -18,7 +21,6 @@ const beginQuestions = () => {
           "add/update roles",
           "View all employees",
           "Add/update employees",
-          "Additional reports",
           "Exit",
         ],
       },
@@ -49,17 +51,14 @@ const beginQuestions = () => {
           addEmployee();
           break;
 
-        case "Additional reports":
-          additionalReports();
-          break;
-
         default:
           console.log("See you later!");
           process.exit();
-          break;
       }
     });
 };
+
+//DEPARTMENTS CODE
 
 const viewDepartments = () => {
   inquirer
@@ -78,7 +77,7 @@ const viewDepartments = () => {
         switch (answer.viewDepartments) {
             case "View all departments":
                 console.log("\n");
-                viewDepartments();
+                viewAllDepartments();
                 break;
 
             default:
@@ -107,12 +106,12 @@ const addDepartment = () => {
       switch (answer.addDepartment) {
         case "Add department":
           console.log("\n");
-          addDepartment();
+          addNewDepartment();
           break;
 
         case "Edit departments":
           console.log("\n");
-          editDepartment();
+          editAllDepartments();
           break;
 
         case "Delete department":
@@ -126,6 +125,51 @@ const addDepartment = () => {
       }
     });
 };
+
+//ASYNC DEPARTMENTS CODE
+
+const viewAllDepartments = async ()  => {
+    const department = new Department();
+    const viewDepartments = await department.viewDepartments();
+
+    menu();
+}
+
+const addNewDepartment = async ()  => {
+    const department = new Department();
+    const newDepartments = await department.newDepartments();
+
+    addDepartment();
+}
+
+const editAllDepartments = async ()  => {
+    const department = new Department();
+    
+    const viewDepartments = await department.viewDepartments();
+
+    if(viewDepartments !==0) {
+        const editDepartments = await department.updateExisting();
+        console.log(`${editDepartments.depatmentName} has been successfully updated.`); } else {
+            console.log("Must select a department to update.");
+        }
+
+        addDepartment();
+    }
+
+const deleteDepartment = async () => {
+    const department = new Department();
+    const viewDepartments = await department.viewDeleteDepartments();
+
+    if(viewDepartments!==0) {
+        const deleteDepartments = await department.deleteDepartment();
+        console.log(`${deleteDepartments.depatmentName} has been successfully deleted.`); } else {
+            console.log("Must select a department to delete.");
+        }
+
+        addDepartment();
+    }
+
+// ROLES CODE
 
 const viewRoles = () => {
     inquirer
@@ -144,7 +188,7 @@ const viewRoles = () => {
         switch (answer.viewRoles) {
           case "View all roles":
             console.log("\n");
-            viewRoles();
+            viewAllRoles();
             break;
 
           default:
@@ -171,12 +215,12 @@ const addRole = () => {
       switch (answer.addRole) {
         case "Add role":
           console.log("\n");
-          addRole();
+          addNewRole();
           break;
 
         case "Edit roles":
           console.log("\n");
-          editRole();
+          editAllRoles();
           break;
 
         case "Delete role":
@@ -191,6 +235,52 @@ const addRole = () => {
     }),
   ]);
 };
+
+//ASYNC ROLES CODE
+
+const viewAllRoles = async ()  => {
+    const role = new Role();
+    const addNewRole = await role.newRole();
+
+    menu();
+}
+
+const addNewRole = async ()  => {
+    const role = new Role();
+    const addNewRole = await role.newRole();
+
+    addRole();
+}
+
+const editAllRoles = async ()  => {
+    const department = new Department();
+    
+    const viewDepartments = await department.viewDepartments();
+
+    if(viewDepartments !==0) {
+        const editDepartments = await department.updateExisting();
+        console.log(`${editDepartments.depatmentName} has been successfully updated.`); } else {
+            console.log("Must select a department to update.");
+        }
+
+        addRole();
+    }
+
+const deleteRole = async () => {
+    const department = new Department();
+    const viewDepartments = await department.viewDeleteDepartments();
+
+    if(viewDepartments!==0) {
+        const deleteDepartments = await department.deleteDepartment();
+        console.log(`${deleteDepartments.depatmentName} has been successfully deleted.`); } else {
+            console.log("Must select a department to delete.");
+        }
+
+        addDepartment();
+    }
+
+
+//EMPLOYEES CODE
 
 const viewEmployees = () => {
     inquirer.prompt([
