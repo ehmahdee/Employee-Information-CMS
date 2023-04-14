@@ -100,4 +100,42 @@ const addDepartment = () => {
     })
 }
 
+const addRole = () => {
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'addRole',
+            message: 'Choose one of the options below:',
+            choices: [
+                'Add role',
+                'Edit roles',
+                'Delete role',
+                'Go back'
+            ]    
+        }
+        .then((answer) => {
+            switch (answer.addRole) {
+                case 'Add role':
+                    console.log('\n');
+                    addRole();
+                    break;
+
+                case 'Edit roles':
+                    console.log('\n');
+                    editRole();
+                    break;
+                
+                case 'Delete role':
+                    console.log('\n');
+                    deleteRole();
+                    break;
+
+                default:
+                    console.log('\n')
+                    menu();
+            }
+        })
+    ])
+}
+
 beginQuestions();
