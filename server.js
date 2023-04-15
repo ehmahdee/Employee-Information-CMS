@@ -297,7 +297,7 @@ const viewEmployees = () => {
         switch (answer.viewEmployees) {
             case "View all employees":
                 console.log("\n");
-                viewEmployees();
+                viewAllEmployees();
                 break;
 
             default:
@@ -324,12 +324,12 @@ const addEmployee = () => {
       switch (answer.addEmployee) {
         case "Add employee":
           console.log("\n");
-          addEmployee();
+          addNewEmployee();
           break;
 
         case "Edit employees":
           console.log("\n");
-          editEmployee();
+          editAllEmployees();
           break;
 
         case "Delete employee":
@@ -344,5 +344,48 @@ const addEmployee = () => {
     }),
   ]);
 };
+
+//EMPLOYEE ASYNC CODE
+
+const viewAllEmployees = async ()  => {
+  const employee = new Employee();
+  const addNewEmployee = await employee.newEmployee();
+
+  menu();
+}
+
+const addNewEmployee = async ()  => {
+  const employee = new Employee();
+  const addNewEmployee = await employee.newEmployee();
+
+  addEmployee();
+}
+
+const editAllEmployees = async ()  => {
+  const employee = new Employee();
+  
+  const viewEmployees = await employee.viewEmployees();
+
+  if(viewEmployees !==0) {
+      const editEmployee = await employee.updateExisting();
+      console.log(`${editEmployee.employeeName} has been successfully updated.`); } else {
+          console.log("Must select a department to update.");
+      }
+
+      addEmployee();
+  }
+
+const deleteEmployee = async () => {
+  const employee = new Employee();
+  const viewEmployee = await employee.viewDeleteEmployees();
+
+  if(viewEmployee!==0) {
+      const deleteEmployee = await employee.deleteEmployee();
+      console.log(`${deleteEmployee.employeeName} has been successfully deleted.`); } else {
+          console.log("Must select a department to delete.");
+      }
+
+      addEmployee();
+  }
 
 beginQuestions();
