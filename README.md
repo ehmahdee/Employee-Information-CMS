@@ -2,7 +2,7 @@
 
   ## Description
   
-  This is a helpful command line app that simplifies and expedites README writing.
+  This is a helpful command line app that allows a user to add, view, and delete records for a local business. 
 
   ## Table of Contents
   * [Installation](#installation)
@@ -15,7 +15,7 @@
   
   ## Installation
   
-  This app requires nodejs, node inquirer 8.2.4, and node jest.
+  This app requires nodejs, node inquirer 8.2.4.
 
   ## Usage
 
