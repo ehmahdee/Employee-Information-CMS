@@ -15,7 +15,7 @@
   
   ## Installation
   
-  This app requires nodejs, node inquirer 8.2.4.
+  This app requires nodejs, node inquirer 8.2.4., mysql, and console.table.
 
   ## Usage
 

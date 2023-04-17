@@ -3,9 +3,9 @@ const inquirer = require("inquirer");
 const mysql = require("mysql");
 const cTable = require("console.table");
 
-// const department = require('./');
-// const employee = require('./');
-// const role = require('./');
+const Department = require('./Deparment');
+const Employee = require('./Employee');
+const Role = require('./Role');
 
 const beginQuestions = () => {
   inquirer
