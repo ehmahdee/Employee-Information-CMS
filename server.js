@@ -10,7 +10,7 @@ const queries = require("./lib/queries");
 const {
   questions,
   addEmployeeQ,
-  addRoleq,
+  addRoleQ,
   addDepartmentQ,
 } = require("./lib/questions");
 
