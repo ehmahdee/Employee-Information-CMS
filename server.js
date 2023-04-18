@@ -3,35 +3,29 @@ const inquirer = require("inquirer");
 const mysql = require("mysql");
 const cTable = require("console.table");
 
-const Department = require('./Deparment');
-const Employee = require('./Employee');
-const Role = require('./Role');
+const connection = require('./config/connection');
 
-const beginQuestions = () => {
+const queries = require("./lib/queries");
+
+const {
+  questions,
+  addEmployeeQ,
+  addRoleq,
+  addDepartmentQ
+} = require("./lib/questions");
+
+const sql = new Queries()
+
+const menu = () => {
   inquirer
-    .prompt([
-      {
-        type: "list",
-        name: "menu",
-        message: "What would you like to do?",
-        choices: [
-          "View all departments",
-          "Add/update departments",
-          "View all roles",
-          "add/update roles",
-          "View all employees",
-          "Add/update employees",
-          "Exit",
-        ],
-      },
-    ])
-    .then((answer) => {
-      switch (answer.menu) {
-        case "View all departments":
+    .prompt(questions)
+  .then((response) => {
+    switch (response.menu) {
+      case "View all departments":
           viewDepartments();
           break;
 
-        case "Add/update departments":
+        case "Add department":
           addDepartment();
           break;
 
@@ -39,7 +33,7 @@ const beginQuestions = () => {
           viewRoles();
           break;
 
-        case "add/update roles":
+        case "add role":
           addRole();
           break;
 
@@ -47,83 +41,118 @@ const beginQuestions = () => {
           viewEmployees();
           break;
 
-        case "Add/update employees":
+        case "Add employee":
           addEmployee();
           break;
 
         default:
           console.log("See you later!");
-          process.exit();
-      }
+          connection.end();
+    }
+  })
+  .catch((err) => {
+      console.log(err);
     });
-};
+}
+
 
 //DEPARTMENTS CODE
 
 const viewDepartments = () => {
-  inquirer
-    .prompt([
-      {
-        type: "list",
-        name: "viewDepartments",
-        message: "Choose one of the options below:",
-        choices: [
-                "View all departments",  
-                "Go Back"
-            ],
-      },
-    ])
-    .then((answer) => {
-        switch (answer.viewDepartments) {
-            case "View all departments":
-                console.log("\n");
-                viewAllDepartments();
-                break;
-
-            default:
-                console.log("\n");
-                menu();
-        }
-    });
+  connection.promise().query(sql.viewDepartments)
+  .then(([rows, fields]) => {
+      console.log("\n");
+      console.table(rows);
+      console.log("\n");
+      menu();
+    })
 };
 
-const addDepartment = () => {
-  inquirer
-    .prompt([
-      {
-        type: "list",
-        name: "addDepartment",
-        message: "Choose one of the options below:",
-        choices: [
-          "Add department",
-          "Edit departments",
-          "Delete department",
-          "Go back",
-        ],
-      },
-    ])
-    .then((answer) => {
-      switch (answer.addDepartment) {
-        case "Add department":
-          console.log("\n");
-          addNewDepartment();
-          break;
+// ROLES CODE
 
-        case "Edit departments":
-          console.log("\n");
-          editAllDepartments();
-          break;
+const viewRoles = () => {
+  connection.promise().query(sql.viewRoles)
+  .then(([rows, fields]) => {
+      console.log("\n");
+      console.table(rows);
+      console.log("\n");
+      menu();
+    })
+};
 
-        case "Delete department":
-          console.log("\n");
-          deleteDepartment();
-          break;
+//EMPLOYEES CODE
 
-        default:
-          console.log("\n");
-          menu();
-      }
-    });
+const viewEmployees = () => {
+  connection.promise().query(sql.viewEmployees)
+  .then(([rows, fields]) => {
+      console.log("\n");
+      console.table(rows);
+      console.log("\n");
+      menu();
+    })
+}
+
+
+//ADD DEPARTMENT CODE
+
+async function addDepartment() {
+  await inquirer.prompt(addDepartmentQ)
+  .then((response) => {
+    connection.promise().query(sql.addDepartment, response.departmentName)
+    .then (() => {
+      console.log('\n');
+                    console.log(`Successfully added ${response.departmentName} to the database.`);
+                    console.log('\n');
+                    menu();
+    })
+  })
+}
+
+//ADD ROLE CODE
+
+const departments = ['Sales', 'Design', 'Finance', 'Legal'];
+
+async function addRole() {
+    await inquirer.prompt(addRoleQ)
+        .then((response) => {
+            const departmentId = departments.findIndex(department => department === response.department) + 1;
+            connection.promise().query(sql.addRole, [response.title, response.salary, departmentId])
+                .then(() => {
+                    console.log('\n');
+                    console.log(`Successfully added ${response.title} to the database.`);
+                    console.log('\n');
+                    menu();
+                })
+        })
+};
+
+//ADD EMPLOYEE CODE
+
+const roles = [
+"Client Manager",
+"Creative Lead",
+"Jr. Coordinator",
+"Jr. Accountant",
+"Sr. Accountant",
+"Sr. Legal Counsel",
+"intern"
+];
+
+const managers = ["Elizabeth Lemon", "Patrick Bateman", "Olivia Pope"];
+
+async function addEmployee() {
+    await inquirer.prompt(addEmployeeQ)
+        .then((response) => {
+            const roleId = roles.findIndex(role => role === response.role) + 1;
+            const managerId = managers.findIndex(manager => manager === response.manager) + 1;
+            connection.promise().query(sql.addEmployee, [response.firstName, response.lastName, roleId, managerId])
+                .then(() => {
+                    console.log('\n');
+                    console.log(`Successfully added ${response.firstName} ${response.lastName} to the database.`);
+                    console.log('\n');
+                    menu();
+                });
+        })
 };
 
 //ASYNC DEPARTMENTS CODE
@@ -169,34 +198,7 @@ const deleteDepartment = async () => {
         addDepartment();
     }
 
-// ROLES CODE
 
-const viewRoles = () => {
-    inquirer
-    .prompt([
-        {
-          type: "list",
-          name: "viewRoles",
-          message: "Choose one of the options below:",
-          choices: [
-            "View all roles",
-            "Go back",
-          ],
-        },
-      ])
-    .then((answer) => {
-        switch (answer.viewRoles) {
-          case "View all roles":
-            console.log("\n");
-            viewAllRoles();
-            break;
-
-          default:
-            console.log("\n");
-            menu();
-        }
-      });
-  };
 
 
 const addRole = () => {
@@ -279,34 +281,6 @@ const deleteRole = async () => {
         addDepartment();
     }
 
-
-//EMPLOYEES CODE
-
-const viewEmployees = () => {
-    inquirer.prompt([
-       {
-        type: "list",
-        name: "viewEmployees",
-        message: "Choose one of the options below:",
-        choices: [
-          "View all employees",
-          "Go back"
-        ],
-       }
-       .then((answer) => {
-        switch (answer.viewEmployees) {
-            case "View all employees":
-                console.log("\n");
-                viewAllEmployees();
-                break;
-
-            default:
-                console.log("\n");
-                menu();
-            }
-       })
-    ])
-}
 
 const addEmployee = () => {
   inquirer.prompt([
