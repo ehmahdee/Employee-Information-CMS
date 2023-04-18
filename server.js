@@ -5,7 +5,7 @@ const cTable = require("console.table");
 
 const connection = require("./config/connection");
 
-const queries = require("./lib/queries");
+const Queries = require("./lib/queries");
 
 const {
   questions,
